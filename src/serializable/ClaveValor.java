@@ -1,6 +1,8 @@
-package server;
+package serializable;
 
-class ClaveValor 
+import java.io.Serializable;
+
+public class ClaveValor implements Serializable
 {
         private String clave;
         private String valor;

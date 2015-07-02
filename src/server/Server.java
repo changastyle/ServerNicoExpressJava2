@@ -1,5 +1,6 @@
 package server;
 
+import serializable.ParametrosEncapsuladosParaClientes;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.Inet4Address;
@@ -21,7 +22,7 @@ public class Server
         this.manejadorServer = manejadorServer;
         this.puerto = manejadorServer.getPuerto();
         this.parametrosEncapsuladosParaClientes = this.manejadorServer.armarArrayConParametrosParaElCliente();
-
+            System.out.println("PARAMETROS  = " +  this.parametrosEncapsuladosParaClientes.toString() );
         
         //INICIO SERVER:
         try

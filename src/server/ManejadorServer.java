@@ -1,5 +1,7 @@
 package server;
 
+import serializable.ClaveValor;
+import serializable.ParametrosEncapsuladosParaClientes;
 import XMLAPI.XMLHandler;
 import java.util.ArrayList;
 import serializable.Jugada;
@@ -104,18 +106,18 @@ class ManejadorServer
     {
             ParametrosEncapsuladosParaClientes pepc = new ParametrosEncapsuladosParaClientes();
             
-            parametrosEncapsuladosParaClientes = new ParametrosEncapsuladosParaClientes();
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("puerto", puerto));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMinimoPorApuesta", importeMinimoPorApuesta));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoPorApuesta", importeMaximoPorApuesta));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importePorDefault", importePorDefault));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("alcanze", alcanze));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoDiario", importeMaximoDiario));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaUNDigito", gananciaUNDigito));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaDOSDigitos", gananciaDOSDigitos));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaTRESDigitos", gananciaTRESDigitos));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("cantidadNumerosGeneradosEnElSorteo", cantidadNumerosGeneradosEnElSorteo));
-            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("MayorNumeroParaSorteo", MayorNumeroParaSorteo));
+            pepc = new ParametrosEncapsuladosParaClientes();
+            pepc.agregarParametro(new ClaveValor("puerto", puerto));
+            pepc.agregarParametro(new ClaveValor("importeMinimoPorApuesta", importeMinimoPorApuesta));
+            pepc.agregarParametro(new ClaveValor("importeMaximoPorApuesta", importeMaximoPorApuesta));
+            pepc.agregarParametro(new ClaveValor("importePorDefault", importePorDefault));
+            pepc.agregarParametro(new ClaveValor("alcanze", alcanze));
+            pepc.agregarParametro(new ClaveValor("importeMaximoDiario", importeMaximoDiario));
+            pepc.agregarParametro(new ClaveValor("gananciaUNDigito", gananciaUNDigito));
+            pepc.agregarParametro(new ClaveValor("gananciaDOSDigitos", gananciaDOSDigitos));
+            pepc.agregarParametro(new ClaveValor("gananciaTRESDigitos", gananciaTRESDigitos));
+            pepc.agregarParametro(new ClaveValor("cantidadNumerosGeneradosEnElSorteo", cantidadNumerosGeneradosEnElSorteo));
+            pepc.agregarParametro(new ClaveValor("MayorNumeroParaSorteo", MayorNumeroParaSorteo));
             
             return pepc;
     }

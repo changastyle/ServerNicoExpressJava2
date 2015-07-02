@@ -1,9 +1,9 @@
-package server;
+package serializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-class ParametrosEncapsuladosParaClientes implements Serializable
+public class ParametrosEncapsuladosParaClientes implements Serializable
 {
         private ArrayList<ClaveValor> arrConParametros ; 
         
@@ -38,5 +38,24 @@ class ParametrosEncapsuladosParaClientes implements Serializable
                 this.arrConParametros = arrConParametros;
         }
 
+        @Override
+        public String toString() 
+        {
+                return "" + imprimirArrParametros() ;
+        }
+
+        private String imprimirArrParametros() 
+        {
+                String salida = "|------------------------ PARAMETROS ------------------------|";
+                for (ClaveValor cv : this.getArrConParametros()) 
+                {
+                        salida += "\n" + cv.getClave() + " -> " + cv.getValor();
+                }
+                salida += "\n|------------------------------------------------------------------------|";
+                return salida;
+        }
+
+        
+        
         
 }
