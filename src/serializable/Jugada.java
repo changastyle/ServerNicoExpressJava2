@@ -6,13 +6,13 @@ import java.io.Serializable;
 public class Jugada implements Serializable
 {
     private String numero;
-    //private int dineroApostado;
+    private int dineroApostado;
     
     
     public Jugada()
     {
         numero = "0" ;
-        //dineroApostado = 0 ;
+        dineroApostado = 0 ;
     }
     
     /*GYS*/
@@ -27,7 +27,7 @@ public class Jugada implements Serializable
         this.numero = numero;
     }
 
-    /*public int getDineroApostado()
+    public int getDineroApostado()
     {
         return dineroApostado;
     }
@@ -36,7 +36,7 @@ public class Jugada implements Serializable
     {
         this.dineroApostado = dineroApostado;
     }
-*/
+
     @Override
     public String toString()
     {

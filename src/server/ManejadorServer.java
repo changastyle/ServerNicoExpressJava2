@@ -10,18 +10,23 @@ class ManejadorServer
         //private final String rutaArchivoConfiguracion = "config.xml";
     
         //ASIGNACION DE PARAMETROS:
-        private int puerto = XMLHandler.leerInt("puerto");
-        private final int importeMinimoPorApuesta = XMLHandler.leerInt("importeMinimoPorApuesta");
-        private final int importeMaximoPorApuesta = XMLHandler.leerInt("importeMaximoPorApuesta");
-        private final int importePorDefault = XMLHandler.leerInt("importePorDefault");
-        private final int alcanze = XMLHandler.leerInt("alcanze");
-        private final int importeMaximoDiario = XMLHandler.leerInt("importeMaximoDiario");
-        private final int gananciaUNDigito = XMLHandler.leerInt("gananciaUNDigito");
-        private final int gananciaDOSDigitos = XMLHandler.leerInt("gananciaDOSDigitos");
-        private final int gananciaTRESDigitos= XMLHandler.leerInt("gananciaTRESDigitos");
+        private static int puerto = XMLHandler.leerInt("puerto");
+        private final static int importeMinimoPorApuesta = XMLHandler.leerInt("importeMinimoPorApuesta");
+        private final static int importeMaximoPorApuesta = XMLHandler.leerInt("importeMaximoPorApuesta");
+        private final static int importePorDefault = XMLHandler.leerInt("importePorDefault");
+        private final static int alcanze = XMLHandler.leerInt("alcanze");
+        private final static int importeMaximoDiario = XMLHandler.leerInt("importeMaximoDiario");
+        private final static int gananciaUNDigito = XMLHandler.leerInt("gananciaUNDigito");
+        private final static int gananciaDOSDigitos = XMLHandler.leerInt("gananciaDOSDigitos");
+        private final static int gananciaTRESDigitos= XMLHandler.leerInt("gananciaTRESDigitos");
+        private final static int cantidadNumerosGeneradosEnElSorteo = XMLHandler.leerInt("cantidadNumerosGeneradosEnElSorteo");
+        private final static int MayorNumeroParaSorteo = XMLHandler.leerInt("MayorNumeroParaSorteo");
+        private ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes;
     
     public ManejadorServer()
     {
+            //this.armarArrayConParametrosParaElCliente();
+            
             //CREO UN OBJETO SERVER GENERICO:
             Server server = new Server(this);
     }
@@ -29,19 +34,41 @@ class ManejadorServer
     //LOGICA DE ESTA APLICACION EN PARTICULAR:
     static void doWhatYouHaveToDoWithNewConexionEntrante(ConexionEntrante conexionEntrante)
     {
-        ConjuntoJugadas conjuntoJugadasRecibidas = (ConjuntoJugadas) conexionEntrante.recibir();
+            //AL FINAL VOY A DEVOLVER ESTO:
+            ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
+            
+            //Recibo un conjunto de Jugadas:
+            ConjuntoJugadas conjuntoJugadasRecibidas = (ConjuntoJugadas) conexionEntrante.recibir();
+            System.out.println("RECIBÍ " + conjuntoJugadasRecibidas.getArrJugadas().size() + " JUGADAS.");
         
-        System.out.println("RECIBÍ " + conjuntoJugadasRecibidas.getArrJugadas().size() + " JUGADAS.");
-        
-        int numeroGanador = (int) (Math.random() * 1000);
-        String strNumeroGanador = "" +  numeroGanador;
-        
-        System.out.println("NUMERO GANADOR = " + numeroGanador );
-        System.out.println("STRNUMEROGANADOR = " + strNumeroGanador);
+            /*
+            //GENERO UN ARRAY DE NUMEROS "SORTEADOS".
+            ArrayList<String> arrNumerosGenerados = new ArrayList<String>();
+            for (int numerosSorteados = 0; numerosSorteados < cantidadNumerosGeneradosEnElSorteo; numerosSorteados++) 
+            {
+                    int numeroGenerado = (int) (Math.random() * MayorNumeroParaSorteo);
+                    String strNumeroGenerado = "" + numeroGenerado;
+                    arrNumerosGenerados.add(strNumeroGenerado);
+                        // System.out.println("NUMERO GANADOR = " + numeroGenerado );
+                        //System.out.println("STRNUMEROGANADOR = " + strNumeroGenerado);
+            }
+
+        for (Jugada j : conjuntoJugadasRecibidas.getArrJugadas())
+        {
+                for(String numeroGenerado : arrNumerosGenerados)
+                {
+                        RespuestaJugada respuestaJugada = new RespuestaJugada(j);
+                        
+                        //Si la ultima parte de algun numero sorteado es igual a el numero apostado en una jugada, entonces le pago:
+                        if(     numeroGenerado.endsWith(   j.getNumero()  )         )
+                        {
+                               int dineroGanado = ( j.getDineroApostado() * 7 * multiplicando ) / conjuntoJugadasRecibidas.getArrJugadas().size();
+                        }   
+                }
+        }
         
         int dineroGanado = 0;
-        ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
-        conjuntoDevuelto.setNumeroGanador(numeroGanador);
+        
         
         for (Jugada j : conjuntoJugadasRecibidas.getArrJugadas())
         {
@@ -55,7 +82,7 @@ class ManejadorServer
                 //TODO : TABLA CON VALORES DE UN ARCHIVO DE CONFIGURACION.
                 int multiplicando = (int) Math.pow(longitudNumeroJugado, diez );
                 
-                dineroGanado = ( conjuntoJugadasRecibidas.getDineroApostado() * 7 * multiplicando ) / conjuntoJugadasRecibidas.getArrJugadas().size();
+                dineroGanado = ( conjuntoJugadasRecibidas.getDineroTotalApostado() * 7 * multiplicando ) / conjuntoJugadasRecibidas.getArrJugadas().size();
                 System.out.println("DEBUG: LENGTH NUMERO APOSTADO = " + j.getNumero().length());
             }
             else
@@ -70,10 +97,46 @@ class ManejadorServer
         
         System.out.println("CONJUNTO DEVUELTO = " + conjuntoDevuelto.toString());
         
-        conexionEntrante.enviar(conjuntoDevuelto);
+        conexionEntrante.enviar(conjuntoDevuelto);*/
     }
     
-    
+    public ParametrosEncapsuladosParaClientes armarArrayConParametrosParaElCliente()
+    {
+            ParametrosEncapsuladosParaClientes pepc = new ParametrosEncapsuladosParaClientes();
+            
+            parametrosEncapsuladosParaClientes = new ParametrosEncapsuladosParaClientes();
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("puerto", puerto));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMinimoPorApuesta", importeMinimoPorApuesta));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoPorApuesta", importeMaximoPorApuesta));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importePorDefault", importePorDefault));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("alcanze", alcanze));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoDiario", importeMaximoDiario));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaUNDigito", gananciaUNDigito));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaDOSDigitos", gananciaDOSDigitos));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaTRESDigitos", gananciaTRESDigitos));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("cantidadNumerosGeneradosEnElSorteo", cantidadNumerosGeneradosEnElSorteo));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("MayorNumeroParaSorteo", MayorNumeroParaSorteo));
+            
+            return pepc;
+    }
+      public ParametrosEncapsuladosParaClientes armarArrayConParametrosParaElCliente(ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes)
+    {
+            
+            parametrosEncapsuladosParaClientes = new ParametrosEncapsuladosParaClientes();
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("puerto", puerto));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMinimoPorApuesta", importeMinimoPorApuesta));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoPorApuesta", importeMaximoPorApuesta));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importePorDefault", importePorDefault));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("alcanze", alcanze));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("importeMaximoDiario", importeMaximoDiario));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaUNDigito", gananciaUNDigito));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaDOSDigitos", gananciaDOSDigitos));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("gananciaTRESDigitos", gananciaTRESDigitos));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("cantidadNumerosGeneradosEnElSorteo", cantidadNumerosGeneradosEnElSorteo));
+            parametrosEncapsuladosParaClientes.agregarParametro(new ClaveValor("MayorNumeroParaSorteo", MayorNumeroParaSorteo));
+            
+            return parametrosEncapsuladosParaClientes;
+    }
     /*GYS*/
 
     public int getPuerto()
@@ -84,4 +147,13 @@ class ManejadorServer
     {
         this.puerto = puerto;
     }
+
+        public ParametrosEncapsuladosParaClientes getParametrosEncapsuladosParaClientes() {
+                return parametrosEncapsuladosParaClientes;
+        }
+
+        public void setParametrosEncapsuladosParaClientes(ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes) {
+                this.parametrosEncapsuladosParaClientes = parametrosEncapsuladosParaClientes;
+        }
+    
 }

@@ -15,12 +15,12 @@ import java.util.ArrayList;
 public class ConjuntoJugadas implements Serializable
 {
     private ArrayList<Jugada> arrJugadas;
-    private int dineroApostado;
+    private int dineroTotalApostado;
     
     public ConjuntoJugadas()
     {
         arrJugadas = new ArrayList<>();
-        dineroApostado = 0;
+        dineroTotalApostado = 0;
     }
     
     
@@ -40,14 +40,14 @@ public class ConjuntoJugadas implements Serializable
         this.arrJugadas = arrJugadas;
     }
 
-    public int getDineroApostado()
+    public int getDineroTotalApostado()
     {
-        return dineroApostado;
+        return dineroTotalApostado;
     }
 
-    public void setDineroApostado(int dineroApostado)
+    public void setDineroTotalApostado(int dineroApostado)
     {
-        this.dineroApostado = dineroApostado;
+        this.dineroTotalApostado = dineroApostado;
     }
     public String imprimirArrJugadas()
     {
@@ -63,7 +63,7 @@ public class ConjuntoJugadas implements Serializable
     @Override
     public String toString()
     {
-        return "ConjuntoJugadas{" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroApostado + '}';
+        return "ConjuntoJugadas{" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroTotalApostado + '}';
     }
     
     

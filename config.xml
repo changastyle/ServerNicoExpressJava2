@@ -8,4 +8,6 @@
 	<gananciaUNDigito>7</gananciaUNDigito>
 	<gananciaDOSDigitos>70</gananciaDOSDigitos>
 	<gananciaTRESDigitos>500</gananciaTRESDigitos>
+	<cantidadNumerosGeneradosEnElSorteo>10</cantidadNumerosGeneradosEnElSorteo>
+	<MayorNumeroParaSorteo>1000</MayorNumeroParaSorteo>
 </config>
