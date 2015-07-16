@@ -6,12 +6,14 @@ import java.util.ArrayList;
 public class ConjuntoDevuelto implements Serializable
 {
     private ArrayList<RespuestaJugada> arrRespuestasJugada;
+    private ArrayList<String> arrNumerosSorteados;
     
     
     
     public ConjuntoDevuelto()
     {
         arrRespuestasJugada = new ArrayList<>();
+        arrNumerosSorteados = new ArrayList<>();
     }
     
     public void agregarRespuestaJugada(RespuestaJugada respuestaJugada)
@@ -29,6 +31,14 @@ public class ConjuntoDevuelto implements Serializable
     {
         this.arrRespuestasJugada = arrRespuestasJugada;
     }  
+
+    public ArrayList<String> getArrNumerosSorteados() {
+        return arrNumerosSorteados;
+    }
+
+    public void setArrNumerosSorteados(ArrayList<String> arrNumerosSorteados) {
+        this.arrNumerosSorteados = arrNumerosSorteados;
+    }
     public int dineroTotalGanado()
     {
         int dineroTotalGanado = 0;
@@ -51,6 +61,10 @@ public class ConjuntoDevuelto implements Serializable
         for (RespuestaJugada respuesta : arrRespuestasJugada)
         {
             salida += "\n" + respuesta.toString() ;
+        }
+        for (String s : arrNumerosSorteados)
+        {
+             salida += "\n" + s;
         }
         
         return salida;

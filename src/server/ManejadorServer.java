@@ -41,35 +41,102 @@ class ManejadorServer
         ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
 
         //RECIBO LAS JUGADAS QUE MANDO EL USUARIO:
-        ConjuntoJugadas conjuntoJugadasRecibidas = (ConjuntoJugadas) conexionEntrante.recibir();
-        conjuntoDevuelto = procesarJugadasEntrantes(conjuntoJugadasRecibidas, conexionEntrante);
+        
+        conjuntoDevuelto = procesarJugadasEntrantes(conexionEntrante);
         
         conexionEntrante.enviar(conjuntoDevuelto);
     }
-    private static ConjuntoDevuelto procesarJugadasEntrantes(ConjuntoJugadas conjuntoJugadasRecibidas, ConexionEntrante conexionEntrante) 
+    private static ConjuntoDevuelto procesarJugadasEntrantes(ConexionEntrante conexionEntrante) 
     {
         ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
-         ///System.out.println("RECIBÍ " + conjuntoJugadasRecibidas.getArrJugadas().size() + " JUGADAS.");
-        
-        int id = insercionesDB(conjuntoJugadasRecibidas,conexionEntrante);
+            
+        ConjuntoJugadas conjuntoJugadasRecibidas = (ConjuntoJugadas) conexionEntrante.recibir();
+            //System.out.println("RECIBÍ " + conjuntoJugadasRecibidas.getArrJugadas().size() + " JUGADAS.");
         
         //GENERO UN ARRAY DE NUMEROS GANADORES Y LOS INSERTO EN DB:".
-        ArrayList<String> arrNumerosGanadores = sortear(id);
+        ArrayList<String> arrNumerosGanadores = sortear(); conjuntoDevuelto.setArrNumerosSorteados(arrNumerosGanadores);
         
-        int gananciaTotal = resolverGanancia(arrNumerosGanadores, conjuntoJugadasRecibidas);
+        System.out.println("PRUEBA" + conjuntoDevuelto.toString());
+        
+        int id = insercionesDB(conexionEntrante, conjuntoJugadasRecibidas , arrNumerosGanadores);
+
+        conjuntoDevuelto = resolverGanancia(arrNumerosGanadores, conjuntoJugadasRecibidas);
+        
+        //RESUELVE LA GANANCIA TOTAL:
+        int gananciaTotal = 0;
+        
+        for(RespuestaJugada respuestaJugada : conjuntoDevuelto.getArrRespuestasJugada())
+        {
+            gananciaTotal += respuestaJugada.getDineroGanadoEnEstaJugada();
+        }
         
         System.out.println("GANANCIA TOTAL: $" + gananciaTotal +",00.");
-        
-        
+        //FIN RESUELVE GANANCIA TOTAL.
+
         return conjuntoDevuelto;
     }
-    private static int resolverGanancia(ArrayList<String> arrNumerosGanadores, ConjuntoJugadas conjuntoJugadasRecibidas) 
+    private static ArrayList<String> sortear() 
     {
-        int dineroTotal = 0;
+        ArrayList<String> arrSalida = new ArrayList<String>();
         
+        for (int numerosSorteados = 0; numerosSorteados < cantidadNumerosGeneradosEnElSorteo; numerosSorteados++) 
+        {
+            int numeroGenerado = (int) (Math.random() * MayorNumeroParaSorteo);
+            String strNumeroGenerado ="";
+            
+            if(numeroGenerado < 10 )
+            {
+                strNumeroGenerado = "00" + numeroGenerado;
+            }
+            else if(numeroGenerado < 100)
+            {
+                strNumeroGenerado = "0" + numeroGenerado;
+            }
+            else
+            {
+                strNumeroGenerado = "" + numeroGenerado;
+            }
+
+            arrSalida.add(strNumeroGenerado);
+        }
+        
+        return arrSalida;
+    }
+    private static int insercionesDB(ConexionEntrante conexionEntrante,ConjuntoJugadas conjuntoJugadasRecibidas,ArrayList<String> arrNumerosGanadores) 
+    {
+        //INSERTO UNA CONEXION ENTRANTE:
+        int id = db.DB.insert("INSERT INTO  `nicoExpress`.`conexionEntrantes` VALUES (NULL ,  '" + conexionEntrante.getSocket().getInetAddress() + "', CURRENT_TIMESTAMP)");
+            System.out.println("CONEXION ENTRANTE CON ID: "+ id);
+        
+        //INSERTO LAS JUGADAS RECIBIDAS EN DB:
+        for(Jugada jugadaRecibida : conjuntoJugadasRecibidas.getArrJugadas())
+        {
+            String sqlInsertaJugadasRecibidas = "INSERT INTO `nicoExpress`.`JugadasRecibidas`VALUES (NULL, '" + id +"', '" + jugadaRecibida.getNumero() +"', '" + jugadaRecibida.getDineroApostado() + "');";
+            db.DB.insert(sqlInsertaJugadasRecibidas);
+                System.out.println("ID CONEXION ENTRANTE: "+ id + ", NUMERO JUGADO:" + jugadaRecibida + ".");
+        }
+        
+        int i = 0 ;
+        for(String numeroSorteado : arrNumerosGanadores)
+        {
+            String sql = "INSERT INTO `nicoExpress`.`numerosGenerados` VALUES (NULL, '"+ id + "', '" + numeroSorteado + "', '" + i + "');";
+            db.DB.insert(sql);
+            System.out.println( i + " - NUMERO SORTEADO N°: " + numeroSorteado);
+            i++;
+        }
+                    
+                
+        return id;
+    }
+    private static ConjuntoDevuelto resolverGanancia(ArrayList<String> arrNumerosGanadores, ConjuntoJugadas conjuntoJugadasRecibidas) 
+    {
+        //int dineroTotal = 0;
+        ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
         
         for(Jugada jugadaDelUsuario :conjuntoJugadasRecibidas.getArrJugadas())
         {
+            RespuestaJugada respuestaJugada = new RespuestaJugada(jugadaDelUsuario);
+            
             int dineroGanadoEstaJugada = 0 ;
             for(String numeroGanador: arrNumerosGanadores)
             {
@@ -79,23 +146,26 @@ class ManejadorServer
                     
                     int multiplicador = resolverMultiplicador(jugadaDelUsuario);
                     
-                    dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * 7 * multiplicador ) / conjuntoJugadasRecibidas.getArrJugadas().size();
+                    dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / conjuntoJugadasRecibidas.getArrJugadas().size();
                     
                     dineroGanadoEstaJugada += dineroCorrespondiente;
                     
-                    System.out.println("GANO");
-                    System.out.println("" + numeroGanador +" -> " + jugadaDelUsuario.getNumero());
+                        System.out.println("GANO");
+                        System.out.println("" + numeroGanador +" -> " + jugadaDelUsuario.getNumero());
                     
                 }
             }
-            dineroTotal += dineroGanadoEstaJugada;
+            respuestaJugada.setDineroGanadoEnEstaJugada(dineroGanadoEstaJugada);
+            conjuntoDevuelto.agregarRespuestaJugada(respuestaJugada);
+            //dineroTotal += dineroGanadoEstaJugada;
+            
             if(dineroGanadoEstaJugada > 0 )
             {
                 System.out.println("DINERO ESTA JUGADA = $" + dineroGanadoEstaJugada);
             }
         }
-            System.out.println("DINERO TOTAL = $" + dineroTotal);
-            return dineroTotal;
+        //System.out.println("DINERO TOTAL = $" + dineroTotal);
+        return conjuntoDevuelto;
     }
     private static int resolverMultiplicador(Jugada jugadaDelUsuario) 
     {
@@ -112,38 +182,6 @@ class ManejadorServer
         }
           
         return multiplicador;
-    }
-    private static ArrayList<String> sortear(int idConexionEntrante) 
-    {
-        ArrayList<String> arrNumerosGanadores = new ArrayList<String>();
-        
-        for (int numerosSorteados = 0; numerosSorteados < cantidadNumerosGeneradosEnElSorteo; numerosSorteados++) 
-        {
-            int numeroGenerado = (int) (Math.random() * MayorNumeroParaSorteo);String strNumeroGenerado = "" + numeroGenerado;
-            arrNumerosGanadores.add(strNumeroGenerado);
-                
-            String sql = "INSERT INTO `nicoExpress`.`numerosGenerados` VALUES (NULL, '"+ idConexionEntrante + "', '" + strNumeroGenerado + "', '" + numerosSorteados + "');";
-            db.DB.insert(sql);
-                System.out.println( numerosSorteados + " - NUMERO SORTEADO N°: " + strNumeroGenerado);
-        }
-        
-        return arrNumerosGanadores;
-    }
-
-    private static int insercionesDB(ConjuntoJugadas conjuntoJugadasRecibidas, ConexionEntrante conexionEntrante) 
-    {
-                //INSERTO UNA CONEXION ENTRANTE:
-        int id = db.DB.insert("INSERT INTO  `nicoExpress`.`conexionEntrantes` VALUES (NULL ,  '" + conexionEntrante.getSocket().getInetAddress() + "', CURRENT_TIMESTAMP)");
-            System.out.println("CONEXION ENTRANTE CON ID: "+ id);
-        
-        //INSERTO LAS JUGADAS RECIBIDAS EN DB:
-        for(Jugada jugadaRecibida : conjuntoJugadasRecibidas.getArrJugadas())
-        {
-            String sqlInsertaJugadasRecibidas = "INSERT INTO `nicoExpress`.`JugadasRecibidas`VALUES (NULL, '" + id +"', '" + jugadaRecibida.getNumero() +"', '" + jugadaRecibida.getDineroApostado() + "');";
-            db.DB.insert(sqlInsertaJugadasRecibidas);
-                System.out.println("ID CONEXION ENTRANTE: "+ id + ", NUMERO JUGADO:" + jugadaRecibida + ".");
-        }
-        return id;
     }
     public ParametrosEncapsuladosParaClientes armarArrayConParametrosParaElCliente()
     {

@@ -27,6 +27,18 @@ public class ParametrosEncapsuladosParaClientes implements Serializable
         {
                 this.arrConParametros.add( claveValor );
         }
+        public ClaveValor getParametro(String clave)
+        {
+            ClaveValor salida = new ClaveValor();
+            for(ClaveValor claveValor : arrConParametros)
+            {
+                if(claveValor.getClave().equalsIgnoreCase(clave))
+                {
+                    salida = claveValor;
+                }
+            }
+            return salida;
+        }
         
         /*GYS*/
 
@@ -37,6 +49,7 @@ public class ParametrosEncapsuladosParaClientes implements Serializable
         public void setArrConParametros(ArrayList<ClaveValor> arrConParametros) {
                 this.arrConParametros = arrConParametros;
         }
+        
 
         @Override
         public String toString() 
