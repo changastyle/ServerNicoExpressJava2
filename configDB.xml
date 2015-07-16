@@ -3,5 +3,5 @@
 	<port>3306</port>
 	<user>root</user>
 	<password>descargar</password>
-	<schema>pruebas</schema>
+	<schema>nicoExpress</schema>
 </config>

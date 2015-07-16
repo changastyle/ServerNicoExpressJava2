@@ -16,7 +16,6 @@ class ThreadRecibidor extends Thread
         try
         {
             //System.out.println("IN = " + in.toString());
-            Thread.sleep(2000);
             objetoRecibido = in.readObject();
             //System.out.println("OBJETO = " +  objetoRecibido);
         } 

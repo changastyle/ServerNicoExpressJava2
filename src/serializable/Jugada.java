@@ -14,6 +14,11 @@ public class Jugada implements Serializable
         numero = "0" ;
         dineroApostado = 0 ;
     }
+    public Jugada(String numero, int dineroApostado)
+    {
+        this.numero = numero;
+        this.dineroApostado = dineroApostado;
+    }
     
     /*GYS*/
 

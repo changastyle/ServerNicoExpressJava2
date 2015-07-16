@@ -38,6 +38,7 @@ class ConexionEntrante extends Thread
 
             threadEnviador = new ThreadEnviador(out,objetoAEnviar);
             threadEnviador.start();
+            threadEnviador.join();
         } catch (Exception e)
         {
             System.out.println("ERROR: OUT NO ESTABLECIDO " + e.toString());
@@ -51,20 +52,14 @@ class ConexionEntrante extends Thread
         
         try
         {
-            this.join();
-            
             threadRecibidor.start();
             threadRecibidor.join();
+            objetoRecibido = threadRecibidor.getObjetoRecibido();
         } 
         catch (InterruptedException ex)
         {
             System.out.println("ERROR: JOIN RECIBIR -> " + ex.toString() );
         }
-        
-        objetoRecibido = threadRecibidor.getObjetoRecibido();
-            
-        
-        
         
         return objetoRecibido;
     }

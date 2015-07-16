@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class ConjuntoDevuelto implements Serializable
 {
     private ArrayList<RespuestaJugada> arrRespuestasJugada;
-    private int numeroGanador;
+    
     
     
     public ConjuntoDevuelto()
@@ -29,16 +29,6 @@ public class ConjuntoDevuelto implements Serializable
     {
         this.arrRespuestasJugada = arrRespuestasJugada;
     }  
-
-    public int getNumeroGanador()
-    {
-        return numeroGanador;
-    }
-
-    public void setNumeroGanador(int numeroGanador)
-    {
-        this.numeroGanador = numeroGanador;
-    }
     public int dineroTotalGanado()
     {
         int dineroTotalGanado = 0;
