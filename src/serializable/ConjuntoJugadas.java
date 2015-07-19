@@ -14,32 +14,34 @@ import java.util.ArrayList;
  */
 public class ConjuntoJugadas implements Serializable
 {
-    private ArrayList<Jugada> arrJugadas;
+    private Jugada arrJugadas[];
     private int dineroTotalApostado;
     
     public ConjuntoJugadas()
     {
-        arrJugadas = new ArrayList<>();
+        arrJugadas = new Jugada[5];
         dineroTotalApostado = 0;
     }
     
     
     /*GYS*/
 
-    public void agregarJugada(Jugada jugada)
+    public void agregarJugada(Jugada jugada , int posicion)
     {
-        this.getArrJugadas().add(jugada);
+        this.arrJugadas[posicion] = jugada;
     }
-    public ArrayList<Jugada> getArrJugadas()
+    public void quitarJugada(int posicion)
+    {
+        this.arrJugadas[posicion] = null;
+    }
+    public void remplazarJugada(Jugada jugada , int posicion)
+    {
+        this.arrJugadas[posicion] = jugada;
+    }
+    public Jugada[] getArrJugadas()
     {
         return arrJugadas;
     }
-
-    public void setArrJugadas(ArrayList<Jugada> arrJugadas)
-    {
-        this.arrJugadas = arrJugadas;
-    }
-
     public int getDineroTotalApostado()
     {
         return dineroTotalApostado;
@@ -55,7 +57,14 @@ public class ConjuntoJugadas implements Serializable
         
         for (Jugada jugada : arrJugadas)
         {
-            salida += "\n" +  jugada.toString();
+            if(jugada != null)
+            {
+                salida += "\n" +  jugada.toString();
+            }
+            else
+            {
+                salida += "\n jugada vacia." ;
+            }
         }
         
         return salida;
@@ -65,6 +74,4 @@ public class ConjuntoJugadas implements Serializable
     {
         return "ConjuntoJugadas{" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroTotalApostado + '}';
     }
-    
-    
 }

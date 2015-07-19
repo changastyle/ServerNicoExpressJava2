@@ -61,7 +61,8 @@ public class Server
                     switch(statusConexion)
                     {
                         case 1:
-                            conexionEntrante.enviar(parametrosEncapsuladosParaClientes);
+                            manejadorServer.enviarConjuntoParametros(conexionEntrante);
+                            //conexionEntrante.enviar(parametrosEncapsuladosParaClientes);
                             break;
                         case 2:
                             this.manejadorServer.doWhatYouHaveToDoWithNewConexionEntrante(conexionEntrante);

@@ -54,9 +54,11 @@ class ManejadorServer
             //System.out.println("RECIBÍ " + conjuntoJugadasRecibidas.getArrJugadas().size() + " JUGADAS.");
         
         //GENERO UN ARRAY DE NUMEROS GANADORES Y LOS INSERTO EN DB:".
-        ArrayList<String> arrNumerosGanadores = sortear(); conjuntoDevuelto.setArrNumerosSorteados(arrNumerosGanadores);
+        ArrayList<String> arrNumerosGanadores = sortear(); 
+        conjuntoDevuelto.setArrNumerosSorteados(arrNumerosGanadores);
         
-        System.out.println("PRUEBA" + conjuntoDevuelto.toString());
+        System.out.println("RECIBI UN NUEVO CONJUNTO DE JUGADAS ENTRANTE DE :" + conexionEntrante.getSocket().getInetAddress());
+        System.out.println("VOY A INSERTAR ESTO EN DB:" + conjuntoDevuelto.toString());
         
         int id = insercionesDB(conexionEntrante, conjuntoJugadasRecibidas , arrNumerosGanadores);
 
@@ -104,6 +106,7 @@ class ManejadorServer
     }
     private static int insercionesDB(ConexionEntrante conexionEntrante,ConjuntoJugadas conjuntoJugadasRecibidas,ArrayList<String> arrNumerosGanadores) 
     {
+        System.out.println("ESTOY INSERTANDO EN DB:");
         //INSERTO UNA CONEXION ENTRANTE:
         int id = db.DB.insert("INSERT INTO  `nicoExpress`.`conexionEntrantes` VALUES (NULL ,  '" + conexionEntrante.getSocket().getInetAddress() + "', CURRENT_TIMESTAMP)");
             System.out.println("CONEXION ENTRANTE CON ID: "+ id);
@@ -111,9 +114,21 @@ class ManejadorServer
         //INSERTO LAS JUGADAS RECIBIDAS EN DB:
         for(Jugada jugadaRecibida : conjuntoJugadasRecibidas.getArrJugadas())
         {
-            String sqlInsertaJugadasRecibidas = "INSERT INTO `nicoExpress`.`JugadasRecibidas`VALUES (NULL, '" + id +"', '" + jugadaRecibida.getNumero() +"', '" + jugadaRecibida.getDineroApostado() + "');";
-            db.DB.insert(sqlInsertaJugadasRecibidas);
+            String sqlInsertaJugadasRecibidas ="";
+                
+            if(jugadaRecibida != null)
+            {
+                sqlInsertaJugadasRecibidas = "INSERT INTO `nicoExpress`.`JugadasRecibidas`VALUES (NULL, '" + id +"', '" + jugadaRecibida.getNumero() +"', '" + jugadaRecibida.getDineroApostado() + "');";
+                
                 System.out.println("ID CONEXION ENTRANTE: "+ id + ", NUMERO JUGADO:" + jugadaRecibida + ".");
+            }else
+            {
+                sqlInsertaJugadasRecibidas = "INSERT INTO `nicoExpress`.`JugadasRecibidas`VALUES (NULL, '" + id +"', '---', '" + 0 + "');";
+                
+                System.out.println("ID CONEXION ENTRANTE: "+ id + ", JUGADA VACIA");
+            }
+            db.DB.insert(sqlInsertaJugadasRecibidas);
+            
         }
         
         int i = 0 ;
@@ -135,35 +150,41 @@ class ManejadorServer
         
         for(Jugada jugadaDelUsuario :conjuntoJugadasRecibidas.getArrJugadas())
         {
-            RespuestaJugada respuestaJugada = new RespuestaJugada(jugadaDelUsuario);
-            
-            int dineroGanadoEstaJugada = 0 ;
-            for(String numeroGanador: arrNumerosGanadores)
+            if(jugadaDelUsuario != null)
             {
-                if(numeroGanador.endsWith(jugadaDelUsuario.getNumero()))
+                RespuestaJugada respuestaJugada = new RespuestaJugada(jugadaDelUsuario);
+
+                int dineroGanadoEstaJugada = 0 ;
+                
+                for(String numeroGanador: arrNumerosGanadores)
                 {
-                    int dineroCorrespondiente = 0;
-                    
-                    int multiplicador = resolverMultiplicador(jugadaDelUsuario);
-                    
-                    dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / conjuntoJugadasRecibidas.getArrJugadas().size();
-                    
-                    dineroGanadoEstaJugada += dineroCorrespondiente;
-                    
-                        System.out.println("GANO");
-                        System.out.println("" + numeroGanador +" -> " + jugadaDelUsuario.getNumero());
-                    
+                    if(numeroGanador.endsWith(jugadaDelUsuario.getNumero()))
+                    {
+                        int dineroCorrespondiente = 0;
+
+                        int multiplicador = resolverMultiplicador(jugadaDelUsuario);
+
+                        dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / conjuntoJugadasRecibidas.getArrJugadas().length;
+
+                        dineroGanadoEstaJugada += dineroCorrespondiente;
+
+                            System.out.println("GANO");
+                            System.out.println("" + numeroGanador +" -> " + jugadaDelUsuario.getNumero());
+
+                    }
                 }
-            }
-            respuestaJugada.setDineroGanadoEnEstaJugada(dineroGanadoEstaJugada);
-            conjuntoDevuelto.agregarRespuestaJugada(respuestaJugada);
-            //dineroTotal += dineroGanadoEstaJugada;
+                respuestaJugada.setDineroGanadoEnEstaJugada(dineroGanadoEstaJugada);
+                conjuntoDevuelto.agregarRespuestaJugada(respuestaJugada);
+                //dineroTotal += dineroGanadoEstaJugada;
+
+                if(dineroGanadoEstaJugada > 0 )
+                {
+                        System.out.println("DINERO ESTA JUGADA = $" + dineroGanadoEstaJugada);
+                }
+            }    
             
-            if(dineroGanadoEstaJugada > 0 )
-            {
-                System.out.println("DINERO ESTA JUGADA = $" + dineroGanadoEstaJugada);
-            }
         }
+            
         //System.out.println("DINERO TOTAL = $" + dineroTotal);
         return conjuntoDevuelto;
     }
@@ -202,6 +223,16 @@ class ManejadorServer
 
         return pepc;
     }
+    public void enviarConjuntoParametros(ConexionEntrante conexionEntrante)
+    {
+        System.out.println("PASE PARAMETROS A IP : "+ conexionEntrante.getSocket().getInetAddress());
+        conexionEntrante.enviar(parametrosEncapsuladosParaClientes);
+    }
+    
+    
+    
+    
+    
     /*GYS*/
     public int getPuerto()
     {
