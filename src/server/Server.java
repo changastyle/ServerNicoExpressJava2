@@ -7,6 +7,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import serializable.Jugada;
+import serializable.Tarjeta;
 
 public class Server 
 {
@@ -68,6 +69,7 @@ public class Server
                             this.manejadorServer.doWhatYouHaveToDoWithNewConexionEntrante(conexionEntrante);
                             break;
                         case 3:
+                            manejadorServer.pedirDatosTarjeta(conexionEntrante);
                             break;
                         default:
                             System.out.println("STATUS CONEXION NO VALIDO" + statusConexion);

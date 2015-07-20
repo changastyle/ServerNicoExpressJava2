@@ -11,7 +11,7 @@ public class Jugada implements Serializable
     
     public Jugada()
     {
-        numero = "0" ;
+        numero = "vacia" ;
         dineroApostado = 0 ;
     }
     public Jugada(String numero, int dineroApostado)
@@ -42,6 +42,17 @@ public class Jugada implements Serializable
         this.dineroApostado = dineroApostado;
     }
 
+    public boolean estoyVacia()
+    {
+        boolean respuesta = false;
+
+        if(numero == "vacia" && dineroApostado == 0)
+        {
+            respuesta = true;
+        }
+
+        return respuesta;
+    }
     @Override
     public String toString()
     {

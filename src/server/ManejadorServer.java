@@ -55,14 +55,13 @@ class ManejadorServer
         
         //GENERO UN ARRAY DE NUMEROS GANADORES Y LOS INSERTO EN DB:".
         ArrayList<String> arrNumerosGanadores = sortear(); 
-        conjuntoDevuelto.setArrNumerosSorteados(arrNumerosGanadores);
-        
         System.out.println("RECIBI UN NUEVO CONJUNTO DE JUGADAS ENTRANTE DE :" + conexionEntrante.getSocket().getInetAddress());
-        System.out.println("VOY A INSERTAR ESTO EN DB:" + conjuntoDevuelto.toString());
+        System.out.println("VOY A INSERTAR ESTO EN DB:" + conjuntoJugadasRecibidas.toString());
         
         int id = insercionesDB(conexionEntrante, conjuntoJugadasRecibidas , arrNumerosGanadores);
 
         conjuntoDevuelto = resolverGanancia(arrNumerosGanadores, conjuntoJugadasRecibidas);
+        conjuntoDevuelto.setArrNumerosSorteados(arrNumerosGanadores);
         
         //RESUELVE LA GANANCIA TOTAL:
         int gananciaTotal = 0;
@@ -75,6 +74,7 @@ class ManejadorServer
         System.out.println("GANANCIA TOTAL: $" + gananciaTotal +",00.");
         //FIN RESUELVE GANANCIA TOTAL.
 
+        System.out.println("ESTOY RESPONDIENDO ESTO AL CLIENTE:" + conjuntoDevuelto.toString());
         return conjuntoDevuelto;
     }
     private static ArrayList<String> sortear() 
@@ -227,6 +227,34 @@ class ManejadorServer
     {
         System.out.println("PASE PARAMETROS A IP : "+ conexionEntrante.getSocket().getInetAddress());
         conexionEntrante.enviar(parametrosEncapsuladosParaClientes);
+    }
+    public boolean existeTarjeta( int numeroSerieTarjeta )
+    {
+        boolean respuesta = false;
+        
+        //if ( pedir())
+        
+        return respuesta;
+    }
+    public Tarjeta pedir(ConexionEntrante conexionEntrante)
+    {
+        int idRecibido = (Integer) conexionEntrante.recibir();
+
+        Tarjeta tarjetaRespuesta = new Tarjeta();
+
+        ArrayList<Object> arrTarjetasFromDB = db.DB.query("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + idRecibido+"'");
+
+        for(Object objetoTarjetaActual : arrTarjetasFromDB)
+        {
+            Tarjeta tarjetaActual = (Tarjeta) objetoTarjetaActual;
+            
+            if (tarjetaActual != null)
+            {
+                tarjetaRespuesta = tarjetaActual;
+            }
+        }
+        
+        return tarjetaRespuesta;
     }
     
     

@@ -14,12 +14,17 @@ import java.util.ArrayList;
  */
 public class ConjuntoJugadas implements Serializable
 {
+    private int maximaCantidadJugadas = 5;
     private Jugada arrJugadas[];
     private int dineroTotalApostado;
     
     public ConjuntoJugadas()
     {
-        arrJugadas = new Jugada[5];
+        arrJugadas = new Jugada[maximaCantidadJugadas];
+        for(int i = 0 ; i < maximaCantidadJugadas ; i++)
+        {
+            arrJugadas[i] = new Jugada();
+        }
         dineroTotalApostado = 0;
     }
     
