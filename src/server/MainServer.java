@@ -10,7 +10,9 @@ public class MainServer
         
         db.DB.conectar();
         
-        db.DB.mapear("SELECT * FROM `tarjetas`",Tarjeta.class);
+       db.DB.mapear("SELECT * FROM `tarjetas`",Tarjeta.class);
+        
+        
         /*ArrayList<Object> arrTarjetasFromDB = db.DB.query("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + 4545878 +"'");
         for(Object o : arrTarjetasFromDB)
         {

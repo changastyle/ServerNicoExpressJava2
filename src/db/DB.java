@@ -189,49 +189,77 @@ public class DB
     public static ArrayList<Object> mapear(String sql , Class claseAMapear)
     {
         ArrayList<Object> arrRespuesta = new ArrayList<Object>();
-        
+
         try
         {
+            Statement st = (Statement) conexion.createStatement();
+            ResultSet rs = (ResultSet) st.executeQuery(sql); 
+            
+            while(rs.next())
+            {
+                for(int i = 1 ; i <= rs.getMetaData().getColumnCount() ; i++)
+                { 
+                    System.out.println("" + rs.getMetaData().getColumnClassName(i) +" -> " + rs.getMetaData().getColumnName(i) + " -> "+ rs.getString(i));
+                }
+                System.out.println("-------");
+            }
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+/*
+        try
+        {        
+            Statement st = (Statement) conexion.createStatement();
+            ResultSet rs = (ResultSet) st.executeQuery(sql); 
+            
             Object instancia = claseAMapear.newInstance();
             System.out.println("METODOS SETTERS DE LA CLASE:");
             
-            for(Method m : dameLosSettersDeLaClase(claseAMapear))
+            int columnasDevueltas = rs.getMetaData().getColumnCount();
+            while(rs.next())
             {
-                //System.out.println("M:" + m.getName().substring(3,m.getName().length()).toLowerCase() );
-                for(String s : dameLosCamposFromDB(sql))
+                for(Method m : dameLosSettersDeLaClase(claseAMapear))
                 {
-                    if(m.getName().substring(3,m.getName().length()).toLowerCase().equalsIgnoreCase(s))
+                    //System.out.println("M:" + m.getName().substring(3,m.getName().length()).toLowerCase() );
+                    int contador = 1;
+                    for(String s : dameLosCamposFromDB(rs))
                     {
-                        Class tipoDeDato = m.getParameters()[0].getType();
-                        //System.out.println("TIPO DE DATO:" + tipoDeDato );
-                        if( tipoDeDato == String.class)
+                        if(m.getName().substring(3,m.getName().length()).toLowerCase().equalsIgnoreCase(s))
                         {
-                             m.invoke(instancia,"1");
-                        }
-                        else if(tipoDeDato == int.class)
-                        {
-                            m.invoke(instancia,1);
-                        }
-                        else if(tipoDeDato == float.class)
-                        {
-                            m.invoke(instancia,1.0f);
-                        }
-                        else if(tipoDeDato == boolean.class)
-                        {
-                            if(s.equalsIgnoreCase("1"))
+                            Class tipoDeDato = m.getParameters()[0].getType();
+                            //System.out.println("TIPO DE DATO:" + tipoDeDato );
+                            if( tipoDeDato == String.class)
                             {
-                                m.invoke(instancia, true);
+                                 m.invoke(instancia,rs.getString(contador));
                             }
-                            else
+                            else if(tipoDeDato == int.class)
                             {
-                                m.invoke(instancia, false);
+                                m.invoke(instancia,rs.getInt(contador));
                             }
+                            else if(tipoDeDato == float.class)
+                            {
+                                m.invoke(instancia,rs.getFloat(contador));
+                            }
+                            else if(tipoDeDato == boolean.class)
+                            {
+                                if(rs.getString(contador).equalsIgnoreCase("1"))
+                                {
+                                    m.invoke(instancia, true);
+                                }
+                                else
+                                {
+                                    m.invoke(instancia, false);
+                                }
+                            }
+                            contador++;
+                            //System.out.println("    CAMPO DB:" + s );
                         }
-                       
-                        //System.out.println("    CAMPO DB:" + s );
                     }
                 }
             }
+            
             arrRespuesta.add(instancia);
             System.out.println("INSTANCIA: " + instancia.toString());
         }
@@ -239,7 +267,7 @@ public class DB
         {
             e.printStackTrace();
         }
-        
+        */
         
         return arrRespuesta;
     }
@@ -261,14 +289,10 @@ public class DB
         //</editor-fold>
         return arrMethodosSetters;
     }
-    public static ArrayList<String> dameLosCamposFromDB(String sql)
-    {  
+    public static ArrayList<String> dameLosCamposFromDB(ResultSet rs){  
         ArrayList<String> arrCampos = new ArrayList<String>();
         try 
         {
-            Statement st = (Statement) conexion.createStatement();
-            ResultSet rs = (ResultSet) st.executeQuery(sql); 
-
             int columnasDevueltas = rs.getMetaData().getColumnCount();
             for (int i = 1; i <= columnasDevueltas; i++) 
             {
@@ -277,9 +301,10 @@ public class DB
         }  
         catch (Exception e) 
         {
-            System.out.println("ERROR: dameLosCamposFromDB: " +sql);
+            System.out.println("ERROR: dameLosCamposFromDB: ");
             e.printStackTrace();
         }
         return arrCampos;      
     }
+   
 }
