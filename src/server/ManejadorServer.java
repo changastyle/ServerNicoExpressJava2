@@ -143,7 +143,7 @@ class ManejadorServer
         }
         else
         {
-            conexionEntrante.enviar(false);
+            //conexionEntrante.enviar(false);
         }
     }
     //</editor-fold>
