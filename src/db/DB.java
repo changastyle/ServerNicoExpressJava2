@@ -194,81 +194,60 @@ public class DB
         {
             Statement st = (Statement) conexion.createStatement();
             ResultSet rs = (ResultSet) st.executeQuery(sql); 
-            
+
             while(rs.next())
             {
+                Object instancia = claseAMapear.newInstance();
                 for(int i = 1 ; i <= rs.getMetaData().getColumnCount() ; i++)
                 { 
-                    System.out.println("" + rs.getMetaData().getColumnClassName(i) +" -> " + rs.getMetaData().getColumnName(i) + " -> "+ rs.getString(i));
+                    for(Method m : dameLosSettersDeLaClase(claseAMapear))
+                    {
+                        String nombreAtributoDeLaClase =  m.getName().toLowerCase().substring(3,m.getName().length());
+                        //System.out.println("" + nombreAtributoDeLaClase);
+                        if(rs.getMetaData().getColumnName(i).toLowerCase().equalsIgnoreCase(nombreAtributoDeLaClase))
+                        {
+                            Class tipoDeDato = m.getParameters()[0].getType();
+                            //System.out.println("TIPO = " + tipoDeDato );
+                            
+                            //<editor-fold desc="CONVERSIONES TIPO DE DATOS:">
+                            if(tipoDeDato.equals(int.class))
+                            {
+                                m.invoke(instancia, rs.getInt(i));
+                            }
+                            else if(tipoDeDato.equals(float.class))
+                            {
+                                m.invoke(instancia, rs.getFloat(i));
+                            }
+                            else if(tipoDeDato.equals(String.class))
+                            {
+                                m.invoke(instancia, rs.getString(i));
+                            }
+                            else if(tipoDeDato.equals(boolean.class))
+                            {
+                                m.invoke(instancia, rs.getBoolean(i));
+                            }
+                            else if(tipoDeDato.equals(java.util.Date.class))
+                            {
+                                m.invoke(instancia, rs.getDate(i));
+                            }
+                            
+                            
+                            
+                            //System.out.println("    " + nombreAtributoDeLaClase +" "+ rs.getString(i));
+                            //</editor-fold>
+                        }
+                    }
+                    //System.out.println("" + rs.getMetaData().getColumnClassName(i) +" -> " + rs.getMetaData().getColumnName(i) + " -> "+ rs.getString(i));
+                    
                 }
-                System.out.println("-------");
+                //System.out.println("-------");
+                arrRespuesta.add(instancia);
             }
         } 
         catch (Exception e)
         {
             e.printStackTrace();
         }
-/*
-        try
-        {        
-            Statement st = (Statement) conexion.createStatement();
-            ResultSet rs = (ResultSet) st.executeQuery(sql); 
-            
-            Object instancia = claseAMapear.newInstance();
-            System.out.println("METODOS SETTERS DE LA CLASE:");
-            
-            int columnasDevueltas = rs.getMetaData().getColumnCount();
-            while(rs.next())
-            {
-                for(Method m : dameLosSettersDeLaClase(claseAMapear))
-                {
-                    //System.out.println("M:" + m.getName().substring(3,m.getName().length()).toLowerCase() );
-                    int contador = 1;
-                    for(String s : dameLosCamposFromDB(rs))
-                    {
-                        if(m.getName().substring(3,m.getName().length()).toLowerCase().equalsIgnoreCase(s))
-                        {
-                            Class tipoDeDato = m.getParameters()[0].getType();
-                            //System.out.println("TIPO DE DATO:" + tipoDeDato );
-                            if( tipoDeDato == String.class)
-                            {
-                                 m.invoke(instancia,rs.getString(contador));
-                            }
-                            else if(tipoDeDato == int.class)
-                            {
-                                m.invoke(instancia,rs.getInt(contador));
-                            }
-                            else if(tipoDeDato == float.class)
-                            {
-                                m.invoke(instancia,rs.getFloat(contador));
-                            }
-                            else if(tipoDeDato == boolean.class)
-                            {
-                                if(rs.getString(contador).equalsIgnoreCase("1"))
-                                {
-                                    m.invoke(instancia, true);
-                                }
-                                else
-                                {
-                                    m.invoke(instancia, false);
-                                }
-                            }
-                            contador++;
-                            //System.out.println("    CAMPO DB:" + s );
-                        }
-                    }
-                }
-            }
-            
-            arrRespuesta.add(instancia);
-            System.out.println("INSTANCIA: " + instancia.toString());
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        */
-        
         return arrRespuesta;
     }
     public static ArrayList<Method> dameLosSettersDeLaClase(Class claseAMapear)

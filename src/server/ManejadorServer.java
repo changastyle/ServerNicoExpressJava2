@@ -123,56 +123,28 @@ class ManejadorServer
     //</editor-fold>
     
     //<editor-fold desc="metodos TARJETAS:">
-    public boolean existeTarjeta( int numeroSerieTarjeta )
-    {
-        boolean respuesta = false;
-        
-        //if ( pedir())
-        
-        return respuesta;
-    }
-    public Tarjeta pedir(ConexionEntrante conexionEntrante)
-    {
-        int idRecibido = (Integer) conexionEntrante.recibir();
-
-        Tarjeta tarjetaRespuesta = new Tarjeta();
-
-        ArrayList<Object> arrTarjetasFromDB = db.DB.query("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + idRecibido+"'");
-
-        for(Object objetoTarjetaActual : arrTarjetasFromDB)
-        {
-            Tarjeta tarjetaActual = (Tarjeta) objetoTarjetaActual;
-            
-            if (tarjetaActual != null)
-            {
-                tarjetaRespuesta = tarjetaActual;
-            }
-        }
-        
-        return tarjetaRespuesta;
-    }    
     private static void pedirDatosTarjeta(ConexionEntrante conexionEntrante)
     {
         Tarjeta tarjetaRespuesta = new Tarjeta();
 
         int numeroRecibidoDeSupuestaTarjeta = (int)conexionEntrante.recibir();
         
-        ArrayList<Object> arrTarjetasFromDB = db.DB.query("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + numeroRecibidoDeSupuestaTarjeta +"'");
-
+        System.out.println("numeroRecibidoDeSupuestaTarjeta: " + numeroRecibidoDeSupuestaTarjeta);
+        ArrayList<Object> arrTarjetasFromDB = db.DB.mapear("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + numeroRecibidoDeSupuestaTarjeta +"'" , Tarjeta.class);
+        
+        System.out.println("arrTarjetasFromDB.size = " +  arrTarjetasFromDB.size() );
+        
         if(arrTarjetasFromDB.size() > 0)
         {
             conexionEntrante.enviar(true);
             tarjetaRespuesta = (Tarjeta) arrTarjetasFromDB.get(0);
+            System.out.println("TARJETA RESPUESTA: " + tarjetaRespuesta.toString() );
             conexionEntrante.enviar(tarjetaRespuesta);
         }
         else
         {
             conexionEntrante.enviar(false);
         }
-        
-        
-        
-        System.out.println("" + numeroRecibidoDeSupuestaTarjeta);
     }
     //</editor-fold>
     
