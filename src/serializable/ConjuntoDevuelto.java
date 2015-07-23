@@ -53,21 +53,27 @@ public class ConjuntoDevuelto implements Serializable
     @Override
     public String toString()
     {
-        String salida =  "\n|---------------- ConjuntoDevuelto -----------------|";
-
-        salida += "\n Total Ganado: $ " + this.dineroTotalGanado();
-        salida += "\n|---------------- RESPUESTAS JUGADAS: -----------------|";
-        System.out.println("\narrRespuestasJugada.LENGTH:" + arrRespuestasJugada.size());
+        ArrayList<String> arrImpresor = new ArrayList<String>();
+        arrImpresor.add("ConjuntoDevuelto");
+        arrImpresor.add("Total Ganado: $ " + this.dineroTotalGanado());  
+        
+        arrImpresor.add("");
+        arrImpresor.add("RESPUESTAS");
+        arrImpresor.add("");
+        
         for (RespuestaJugada respuesta : arrRespuestasJugada)
         {
-            salida += "\n" + respuesta.toString() ;
+            arrImpresor.add(respuesta.toString());
         }
-        salida += "\n|---------------- SALIERON SORTEADOS: -----------------|";
-        System.out.println("\narrNumerosSorteados.LENGTH:" + arrNumerosSorteados.size());
+        arrImpresor.add("");
+        arrImpresor.add("SALIERON SORTEADOS:");
+        arrImpresor.add("");
+        
         for (String s : arrNumerosSorteados)
         {
-            salida += "\n" + s;
+            arrImpresor.add(s);
         }
+        String salida = ImpresorFormateadoConsola.ImpresorConsola.imprimirFormateado(arrImpresor);
 
         return salida;
     }

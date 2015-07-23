@@ -115,6 +115,37 @@ class ConexionEntrante extends Thread
     {
         this.threadRecibidor = threadRecibidor;
     }
+
+    public String componenteEsNulo(Object componente)
+    {
+        String respuesta = "";
+        
+        if (componente != null)
+        {
+            respuesta += componente.getClass().getName() + ": 1"; 
+        }
+        else
+        {
+            respuesta += componente.getClass().getName() + ": 0";
+        }
+        return respuesta;
+    }
+    @Override
+    public String toString()
+    {
+        String respuesta = "ConexionEntrante(" + socket.getInetAddress();
+        
+        respuesta += componenteEsNulo(in);
+        respuesta += componenteEsNulo(out);
+        respuesta += componenteEsNulo(threadEnviador);
+        respuesta += componenteEsNulo(threadRecibidor);
+        
+        respuesta += ")";
+        
+    
+        return respuesta;
+        
+    }
     
     
 }

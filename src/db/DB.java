@@ -1,5 +1,6 @@
 package db;
 
+import java.lang.reflect.Method;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -35,7 +36,7 @@ public class DB
             }
             catch(ClassNotFoundException ex) 
             {
-                System.out.println("Error: unable to load driver class!");
+                System.out.println("ERROR: NO SE ENCONTRO EL DRIVER.");
                 ex.printStackTrace();
                 System.exit(1);
 
@@ -65,12 +66,12 @@ public class DB
                     //System.out.println("Cantidad de Columnas = " + (cantidadColumnas -1) );
                     while(rs.next())
                     {
-                            ArrayList<String> arrFila = new ArrayList<String>();
-                            for (int i = 1; i < cantidadColumnas; i++)
-                            {
-                                    arrFila.add(rs.getString(i));
-                            }
-                            arrSalida.add(arrFila);
+                        ArrayList<String> arrFila = new ArrayList<String>();
+                        for (int i = 1; i < cantidadColumnas; i++)
+                        {
+                            arrFila.add(rs.getString(i));
+                        }
+                        arrSalida.add(arrFila);
                     } 
                 }
 
@@ -184,5 +185,101 @@ public class DB
         }
         return arrIDsGenerados;
 
+    }
+    public static ArrayList<Object> mapear(String sql , Class claseAMapear)
+    {
+        ArrayList<Object> arrRespuesta = new ArrayList<Object>();
+        
+        try
+        {
+            Object instancia = claseAMapear.newInstance();
+            System.out.println("METODOS SETTERS DE LA CLASE:");
+            
+            for(Method m : dameLosSettersDeLaClase(claseAMapear))
+            {
+                //System.out.println("M:" + m.getName().substring(3,m.getName().length()).toLowerCase() );
+                for(String s : dameLosCamposFromDB(sql))
+                {
+                    if(m.getName().substring(3,m.getName().length()).toLowerCase().equalsIgnoreCase(s))
+                    {
+                        Class tipoDeDato = m.getParameters()[0].getType();
+                        //System.out.println("TIPO DE DATO:" + tipoDeDato );
+                        if( tipoDeDato == String.class)
+                        {
+                             m.invoke(instancia,"1");
+                        }
+                        else if(tipoDeDato == int.class)
+                        {
+                            m.invoke(instancia,1);
+                        }
+                        else if(tipoDeDato == float.class)
+                        {
+                            m.invoke(instancia,1.0f);
+                        }
+                        else if(tipoDeDato == boolean.class)
+                        {
+                            if(s.equalsIgnoreCase("1"))
+                            {
+                                m.invoke(instancia, true);
+                            }
+                            else
+                            {
+                                m.invoke(instancia, false);
+                            }
+                        }
+                       
+                        //System.out.println("    CAMPO DB:" + s );
+                    }
+                }
+            }
+            arrRespuesta.add(instancia);
+            System.out.println("INSTANCIA: " + instancia.toString());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        
+        return arrRespuesta;
+    }
+    public static ArrayList<Method> dameLosSettersDeLaClase(Class claseAMapear)
+    {
+        //Class claseAMapear = objeto.getClass();
+        //System.out.println("CLASE:" + claseAMapear.getName());
+        
+        //<editor-fold desc="Se carga un array con metodos setters de la clase">
+        ArrayList<Method> arrMethodosSetters = new ArrayList<Method>();
+        for(Method m : claseAMapear.getMethods())
+        {
+            if(m.getName().startsWith("set"))
+            {
+                arrMethodosSetters.add(m);
+            }
+            
+        }
+        //</editor-fold>
+        return arrMethodosSetters;
+    }
+    public static ArrayList<String> dameLosCamposFromDB(String sql)
+    {  
+        ArrayList<String> arrCampos = new ArrayList<String>();
+        try 
+        {
+            Statement st = (Statement) conexion.createStatement();
+            ResultSet rs = (ResultSet) st.executeQuery(sql); 
+
+            int columnasDevueltas = rs.getMetaData().getColumnCount();
+            for (int i = 1; i <= columnasDevueltas; i++) 
+            {
+                arrCampos.add(rs.getMetaData().getColumnName(i).toLowerCase() );
+            }
+        }  
+        catch (Exception e) 
+        {
+            System.out.println("ERROR: dameLosCamposFromDB: " +sql);
+            e.printStackTrace();
+        }
+        return arrCampos;      
     }
 }
