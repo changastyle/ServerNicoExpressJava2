@@ -6,7 +6,6 @@
 package serializable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +16,7 @@ public class ConjuntoJugadas implements Serializable
     private int maximaCantidadJugadas = 5;
     private Jugada arrJugadas[];
     private int dineroTotalApostado;
+    private Tarjeta tarjetaActual;
     
     public ConjuntoJugadas()
     {
@@ -26,6 +26,7 @@ public class ConjuntoJugadas implements Serializable
             arrJugadas[i] = new Jugada();
         }
         dineroTotalApostado = 0;
+        tarjetaActual = new Tarjeta();
     }
     
     
@@ -74,9 +75,30 @@ public class ConjuntoJugadas implements Serializable
         
         return salida;
     }
+
+    public int getMaximaCantidadJugadas() {
+        return maximaCantidadJugadas;
+    }
+
+    public void setMaximaCantidadJugadas(int maximaCantidadJugadas) {
+        this.maximaCantidadJugadas = maximaCantidadJugadas;
+    }
+
+    public void setArrJugadas(Jugada[] arrJugadas) {
+        this.arrJugadas = arrJugadas;
+    }
+
+    public Tarjeta getTarjetaActual() {
+        return tarjetaActual;
+    }
+
+    public void setTarjetaActual(Tarjeta tarjetaActual) {
+        this.tarjetaActual = tarjetaActual;
+    }
+
     @Override
     public String toString()
     {
-        return "ConjuntoJugadas{" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroTotalApostado + '}';
+        return "ConjuntoJugadas{ TARJETA ID= " + tarjetaActual.toString() +" ->" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroTotalApostado + '}';
     }
 }

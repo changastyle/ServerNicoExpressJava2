@@ -43,7 +43,7 @@ public class RespuestaJugada implements Serializable
     @Override
     public String toString()
     {
-        return "$" +jugadaRealizada.getDineroApostado() + " apostados al #" + jugadaRealizada.getNumero() +" | Dinero Ganado: $" + this.getDineroGanadoEnEstaJugada();
+        return "RespuestaJugada{" +  jugadaRealizada.toString() + ", dineroGanadoEnEstaJugada=" + dineroGanadoEnEstaJugada + '}';
     }
     
     

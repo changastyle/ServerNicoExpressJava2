@@ -143,7 +143,7 @@ class ManejadorServer
         }
         else
         {
-            //conexionEntrante.enviar(false);
+            conexionEntrante.enviar(false);
         }
     }
     //</editor-fold>
@@ -167,11 +167,10 @@ class ManejadorServer
         //GENERO UN ARRAY DE NUMEROS GANADORES Y LOS INSERTO EN DB:".
         ArrayList<String> arrNumerosGanadores = sortear(); 
         
-        //INSERTO EN LA BASE DE DATOS: LAS JUGADAS RECIBIDAS Y NUMEROS GENERADOS ASOCIADOS AL PK DE LA CONEXION ENTRANTE.
-        int id = insercionesDB(conexionEntrante, conjuntoJugadasRecibidas , arrNumerosGanadores);
-
         conjuntoRespuesta = resolverGanancia(arrNumerosGanadores, conjuntoJugadasRecibidas);
         conjuntoRespuesta.setArrNumerosSorteados(arrNumerosGanadores);
+        
+        Tarjeta tarjeta = conjuntoJugadasRecibidas.getTarjetaActual();
         
         //<editor-fold desc="RESUELVE LA GANANCIA TOTAL:">
         int gananciaTotal = 0;
@@ -179,10 +178,26 @@ class ManejadorServer
         for(RespuestaJugada respuestaJugada : conjuntoRespuesta.getArrRespuestasJugada())
         {
             gananciaTotal += respuestaJugada.getDineroGanadoEnEstaJugada();
+            tarjeta.setSaldo(tarjeta.getSaldo() - respuestaJugada.getJugadaRealizada().getDineroApostado() );
         }
         //</editor-fold>
+        
+        if(tarjeta.getSaldo() > 0)
+        {
+            tarjeta.setSaldo(tarjeta.getSaldo() + gananciaTotal);
+            conjuntoRespuesta.setTarjetaDevuelta(tarjeta);
+        
+            //INSERTO EN LA BASE DE DATOS: LAS JUGADAS RECIBIDAS Y NUMEROS GENERADOS ASOCIADOS AL PK DE LA CONEXION ENTRANTE.
+            int id = insercionesDB(conexionEntrante, conjuntoJugadasRecibidas , arrNumerosGanadores, tarjeta );
 
-        System.out.println( conjuntoRespuesta.toString());
+        
+            System.out.println( conjuntoRespuesta.toString());
+        }else
+        {
+            conjuntoRespuesta = new ConjuntoDevuelto();
+            System.out.println("SIN SALDO.");
+        }
+        
         return conjuntoRespuesta;
     }
     private static ArrayList<String> sortear() 
@@ -212,7 +227,7 @@ class ManejadorServer
         
         return arrSalida;
     }
-    private static int insercionesDB(ConexionEntrante conexionEntrante,ConjuntoJugadas conjuntoJugadasRecibidas,ArrayList<String> arrNumerosGanadores) 
+    private static int insercionesDB(ConexionEntrante conexionEntrante,ConjuntoJugadas conjuntoJugadasRecibidas,ArrayList<String> arrNumerosGanadores,Tarjeta tarjeta) 
     {
         //INSERTO UNA CONEXION ENTRANTE:
         int id = db.DB.insert("INSERT INTO  `nicoExpress`.`conexionEntrantes` VALUES (NULL ,  '" + conexionEntrante.getSocket().getInetAddress() + "', CURRENT_TIMESTAMP)");
@@ -243,7 +258,11 @@ class ManejadorServer
             String sql = "INSERT INTO `nicoExpress`.`numerosGenerados` VALUES (NULL, '"+ id + "', '" + numeroSorteado + "', '" + i + "');";
             db.DB.insert(sql);
             i++;
-        }       
+        }      
+        
+        String sqlTarjeta = "UPDATE  `nicoExpress`.`tarjetas` SET  `saldo` =  '" + tarjeta.getSaldo() + "' WHERE  `tarjetas`.`serial` = '" + tarjeta.getSerial() +"';";
+        db.DB.insert(sqlTarjeta);
+        
         return id;
     }
     private static ConjuntoDevuelto resolverGanancia(ArrayList<String> arrNumerosGanadores, ConjuntoJugadas conjuntoJugadasRecibidas) 

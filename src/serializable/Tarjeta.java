@@ -54,10 +54,21 @@ public class Tarjeta implements Serializable
         this.saldo = dinero;
     }
 
+    public boolean estaVacia()
+    {
+        boolean respuesta = false;
+
+        if(ID == 0 )
+        {
+            respuesta = true;
+        }
+
+        return respuesta;
+    }
     @Override
     public String toString()
     {
         return "Tarjeta{" + "ID = " + ID + ", serial = " + serial + ", saldo = " + saldo + '}';
     }
-    
+
 }

@@ -206,8 +206,9 @@ public class DB
                         //System.out.println("" + nombreAtributoDeLaClase);
                         if(rs.getMetaData().getColumnName(i).toLowerCase().equalsIgnoreCase(nombreAtributoDeLaClase))
                         {
-                            Class tipoDeDato = m.getParameters()[0].getType();
-                            //System.out.println("TIPO = " + tipoDeDato );
+                            //Class tipoDeDato = m.getParameters()[0].getType();
+                            Class tipoDeDato = m.getParameterTypes()[0];
+                            System.out.println("TIPO = " + tipoDeDato  +" -> " + rs.getString(i));
                             
                             //<editor-fold desc="CONVERSIONES TIPO DE DATOS:">
                             if(tipoDeDato.equals(int.class))
