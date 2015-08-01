@@ -108,11 +108,11 @@ class ManejadorServer
 
         if(pepc != null)
         {
-            System.out.println("" + pepc.toString() );
+            //System.out.println("" + pepc.toString() );
         }
         else
         {
-            System.out.println("PEPC = NULL");
+            //System.out.println("PEPC = NULL");
         }       
         return pepc;
     }
@@ -129,22 +129,24 @@ class ManejadorServer
 
         int numeroRecibidoDeSupuestaTarjeta = (int)conexionEntrante.recibir();
         
-        System.out.println("numeroRecibidoDeSupuestaTarjeta: " + numeroRecibidoDeSupuestaTarjeta);
-        ArrayList<Object> arrTarjetasFromDB = db.DB.mapear("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + numeroRecibidoDeSupuestaTarjeta +"'" , Tarjeta.class);
+        ArrayList<String> arrImpresor = new ArrayList<String>();
+        arrImpresor.add("Numero Recibido: " + numeroRecibidoDeSupuestaTarjeta);
         
-        System.out.println("arrTarjetasFromDB.size = " +  arrTarjetasFromDB.size() );
+        ArrayList<Object> arrTarjetasFromDB = db.DB.mapear("SELECT * FROM  `tarjetas` WHERE  `serial` LIKE  '" + numeroRecibidoDeSupuestaTarjeta +"'" , Tarjeta.class);
         
         if(arrTarjetasFromDB.size() > 0)
         {
             conexionEntrante.enviar(true);
             tarjetaRespuesta = (Tarjeta) arrTarjetasFromDB.get(0);
-            System.out.println("TARJETA RESPUESTA: " + tarjetaRespuesta.toString() );
+            arrImpresor.add("TARJETA RESPUESTA: " + tarjetaRespuesta );
             conexionEntrante.enviar(tarjetaRespuesta);
         }
         else
         {
+            arrImpresor.add("TARJETA NO VALIDA.");
             conexionEntrante.enviar(false);
         }
+        ImpresorFormateadoConsola.ImpresorConsola.imprimirFormateado(arrImpresor);
     }
     //</editor-fold>
     
@@ -173,7 +175,7 @@ class ManejadorServer
         Tarjeta tarjeta = conjuntoJugadasRecibidas.getTarjetaActual();
         
         //<editor-fold desc="RESUELVE LA GANANCIA TOTAL:">
-        int gananciaTotal = 0;
+        float gananciaTotal = 0;
         
         for(RespuestaJugada respuestaJugada : conjuntoRespuesta.getArrRespuestasJugada())
         {
@@ -182,6 +184,7 @@ class ManejadorServer
         }
         //</editor-fold>
         
+        //SI LE ALCANZA LA PLATA PARA PAGAR; ENTONCES ESCRIBO EN DB Y LE DEVUELVO EL CONJUNTO RESPUESTA DEVUELTO; SINO LE DEVUELVO UN NEW CONJUNTORESPUETA:
         if(tarjeta.getSaldo() > 0)
         {
             tarjeta.setSaldo(tarjeta.getSaldo() + gananciaTotal);
@@ -206,7 +209,7 @@ class ManejadorServer
         
         for (int numerosSorteados = 0; numerosSorteados < cantidadNumerosGeneradosEnElSorteo; numerosSorteados++) 
         {
-            int numeroGenerado = (int) (Math.random() * MayorNumeroParaSorteo);
+            int numeroGenerado = (int) ( Math.random() * MayorNumeroParaSorteo );
             String strNumeroGenerado ="";
             
             if(numeroGenerado < 10 )
@@ -276,17 +279,22 @@ class ManejadorServer
             {
                 RespuestaJugada respuestaJugada = new RespuestaJugada(jugadaDelUsuario);
 
-                int dineroGanadoEstaJugada = 0 ;
+                float dineroGanadoEstaJugada = 0 ;
                 
                 for(String numeroGanador: arrNumerosGanadores)
                 {
                     if(numeroGanador.endsWith(jugadaDelUsuario.getNumero()))
                     {
-                        int dineroCorrespondiente = 0;
+                        float dineroCorrespondiente = 0;
 
-                        int multiplicador = resolverMultiplicador(jugadaDelUsuario);
+                        float multiplicador = resolverMultiplicador(jugadaDelUsuario);
 
-                        dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / conjuntoJugadasRecibidas.getArrJugadas().length;
+                        dineroCorrespondiente = ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / alcanze;
+                        
+                        System.out.println("DINERO APOSTADO:" + jugadaDelUsuario.getDineroApostado());
+                        System.out.println("MULTIPLICADOR: " + multiplicador);
+                        System.out.println("ALCANZE:" + alcanze );
+                        System.out.println("RESULTADO:" + ( jugadaDelUsuario.getDineroApostado() * multiplicador ) / alcanze );
 
                         dineroGanadoEstaJugada += dineroCorrespondiente;
 
@@ -306,9 +314,9 @@ class ManejadorServer
         }
         return conjuntoDevuelto;
     }
-    private static int resolverMultiplicador(Jugada jugadaDelUsuario) 
+    private static float resolverMultiplicador(Jugada jugadaDelUsuario) 
     {
-        int multiplicador = 0;
+        float multiplicador = 0;
         
         switch(jugadaDelUsuario.getNumero().length())
         {

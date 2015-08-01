@@ -208,7 +208,7 @@ public class DB
                         {
                             //Class tipoDeDato = m.getParameters()[0].getType();
                             Class tipoDeDato = m.getParameterTypes()[0];
-                            System.out.println("TIPO = " + tipoDeDato  +" -> " + rs.getString(i));
+                            //System.out.println("TIPO = " + tipoDeDato  +" -> " + rs.getString(i));
                             
                             //<editor-fold desc="CONVERSIONES TIPO DE DATOS:">
                             if(tipoDeDato.equals(int.class))

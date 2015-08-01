@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class Jugada implements Serializable
 {
     private String numero;
-    private int dineroApostado;
+    private float dineroApostado;
     
     
     public Jugada()
@@ -20,33 +20,30 @@ public class Jugada implements Serializable
         this.dineroApostado = dineroApostado;
     }
     
-    /*GYS*/
-
+    //<editor-fold desc="GYS">
     public String getNumero()
     {
         return numero;
     }
-
     public void setNumero(String numero)
     {
         this.numero = numero;
     }
-
-    public int getDineroApostado()
+    public float getDineroApostado()
     {
         return dineroApostado;
     }
-
-    public void setDineroApostado(int dineroApostado)
+    public void setDineroApostado(float dineroApostado)
     {
         this.dineroApostado = dineroApostado;
     }
-
+    //</editor-fold>
+    
     public boolean estoyVacia()
     {
         boolean respuesta = false;
 
-        if(numero == "vacia" && dineroApostado == 0)
+        if(numero == "vacia" && dineroApostado == 0.0f)
         {
             respuesta = true;
         }

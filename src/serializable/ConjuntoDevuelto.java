@@ -9,8 +9,6 @@ public class ConjuntoDevuelto implements Serializable
     private ArrayList<String> arrNumerosSorteados;
     private Tarjeta tarjetaDevuelta;
 
-
-
     public ConjuntoDevuelto()
     {
         arrRespuestasJugada = new ArrayList<RespuestaJugada>();
@@ -23,7 +21,7 @@ public class ConjuntoDevuelto implements Serializable
         this.arrRespuestasJugada.add(respuestaJugada);
     }
 
-    /*GYS*/
+    //<editor-fold desc="GYS">
     public ArrayList<RespuestaJugada> getArrRespuestasJugada()
     {
         return arrRespuestasJugada;
@@ -41,9 +39,9 @@ public class ConjuntoDevuelto implements Serializable
     public void setArrNumerosSorteados(ArrayList<String> arrNumerosSorteados) {
         this.arrNumerosSorteados = arrNumerosSorteados;
     }
-    public int dineroTotalGanado()
+    public float dineroTotalGanado()
     {
-        int dineroTotalGanado = 0;
+        float dineroTotalGanado = 0;
 
         for (RespuestaJugada respuesta : arrRespuestasJugada)
         {
@@ -60,6 +58,7 @@ public class ConjuntoDevuelto implements Serializable
     public void setTarjetaDevuelta(Tarjeta tarjetaDevuelta) {
         this.tarjetaDevuelta = tarjetaDevuelta;
     }
+    //</editor-fold>
 
     @Override
     public String toString()

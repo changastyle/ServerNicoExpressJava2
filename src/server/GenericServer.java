@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import serializable.ClaveValor;
 import serializable.Jugada;
 import serializable.Tarjeta;
 
@@ -26,6 +27,13 @@ public class GenericServer
         {
             serverSocket = new ServerSocket(puerto);
             ArrayList<String> arrImpresor = new ArrayList<String>();
+            arrImpresor.add("Parametros:");
+            for (ClaveValor parametro: this.parametrosEncapsuladosParaClientes.getArrConParametros())
+            {
+                arrImpresor.add(   parametro.getClave() + " -> " + parametro.getValor()  );
+            }
+            
+            arrImpresor.add("");
             arrImpresor.add("SERVER INICIADO:");
             arrImpresor.add("Server escuchando en puerto: " + puerto);
             

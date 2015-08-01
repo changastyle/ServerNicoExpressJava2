@@ -21,7 +21,20 @@ public class ImpresorConsola
             int numeroDeTabulaciones = (largoTotal - stringActual.length())/2;
             if (contador == 0 )
             {
-                salida += "\n|" + lleno.substring(0,numeroDeTabulaciones-1) +" "+ stringActual + " "+lleno.substring(0,numeroDeTabulaciones-1)+"|";
+                salida += "\n|" + lleno.substring(0,numeroDeTabulaciones) +" "+ stringActual + " "+lleno.substring(0,numeroDeTabulaciones-1)+"|";
+            }
+            else if(stringActual.trim().equalsIgnoreCase(""))
+            {
+                salida += "\n|";
+                
+                for(int i = 0; i < (numeroDeTabulaciones)*2 ; i++)
+                {
+                    salida += "-";
+                }
+                
+                       
+                
+                salida += "|";
             }
             else
             {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package serializable;
 
 import java.io.Serializable;
@@ -10,42 +5,36 @@ import java.io.Serializable;
 public class RespuestaJugada implements Serializable
 {
     private Jugada jugadaRealizada;
-    private int dineroGanadoEnEstaJugada;
+    private float dineroGanadoEnEstaJugada;
     
     public RespuestaJugada(Jugada jugadaRealizada)
     {
         this.jugadaRealizada = jugadaRealizada;
-        dineroGanadoEnEstaJugada = 0 ;
+        dineroGanadoEnEstaJugada = 0.0f ;
     }
     
-    /*GYS*/
-
+    //<editor-fold desc="GYS">
     public Jugada getJugadaRealizada()
     {
         return jugadaRealizada;
     }
-
     public void setJugadaRealizada(Jugada jugadaRealizada)
     {
         this.jugadaRealizada = jugadaRealizada;
     }
-
-    public int getDineroGanadoEnEstaJugada()
+    public float getDineroGanadoEnEstaJugada()
     {
         return dineroGanadoEnEstaJugada;
     }
-
-    public void setDineroGanadoEnEstaJugada(int dineroGanadoEnEstaJugada)
+    public void setDineroGanadoEnEstaJugada(float dineroGanadoEnEstaJugada)
     {
         this.dineroGanadoEnEstaJugada = dineroGanadoEnEstaJugada;
     }
-
+    //</editor-fold>
+    
     @Override
     public String toString()
     {
         return "RespuestaJugada{" +  jugadaRealizada.toString() + ", dineroGanadoEnEstaJugada=" + dineroGanadoEnEstaJugada + '}';
     }
-    
-    
-    
 }

@@ -1,21 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package serializable;
 
 import java.io.Serializable;
 
-/**
- *
- * @author NICOLAS
- */
 public class ConjuntoJugadas implements Serializable
 {
     private int maximaCantidadJugadas = 5;
     private Jugada arrJugadas[];
-    private int dineroTotalApostado;
+    private float dineroTotalApostado;
     private Tarjeta tarjetaActual;
     
     public ConjuntoJugadas()
@@ -28,10 +19,8 @@ public class ConjuntoJugadas implements Serializable
         dineroTotalApostado = 0;
         tarjetaActual = new Tarjeta();
     }
-    
-    
-    /*GYS*/
-
+     
+    //<editor-fold desc="GYS">
     public void agregarJugada(Jugada jugada , int posicion)
     {
         this.arrJugadas[posicion] = jugada;
@@ -48,15 +37,37 @@ public class ConjuntoJugadas implements Serializable
     {
         return arrJugadas;
     }
-    public int getDineroTotalApostado()
+    public float getDineroTotalApostado()
     {
         return dineroTotalApostado;
     }
-
-    public void setDineroTotalApostado(int dineroApostado)
+    public void setDineroTotalApostado(float dineroApostado)
     {
         this.dineroTotalApostado = dineroApostado;
     }
+    public int getMaximaCantidadJugadas() 
+    {
+        return maximaCantidadJugadas;
+    }
+    public void setMaximaCantidadJugadas(int maximaCantidadJugadas) 
+    {
+        this.maximaCantidadJugadas = maximaCantidadJugadas;
+    }
+    public void setArrJugadas(Jugada[] arrJugadas) 
+    {
+        this.arrJugadas = arrJugadas;
+    }
+    public Tarjeta getTarjetaActual() 
+    {
+        return tarjetaActual;
+    }
+    public void setTarjetaActual(Tarjeta tarjetaActual) 
+    {
+        this.tarjetaActual = tarjetaActual;
+    }
+    //</editor-fold>
+    
+    //<editor-fold desc="toString">
     public String imprimirArrJugadas()
     {
         String salida = "";
@@ -75,30 +86,11 @@ public class ConjuntoJugadas implements Serializable
         
         return salida;
     }
-
-    public int getMaximaCantidadJugadas() {
-        return maximaCantidadJugadas;
-    }
-
-    public void setMaximaCantidadJugadas(int maximaCantidadJugadas) {
-        this.maximaCantidadJugadas = maximaCantidadJugadas;
-    }
-
-    public void setArrJugadas(Jugada[] arrJugadas) {
-        this.arrJugadas = arrJugadas;
-    }
-
-    public Tarjeta getTarjetaActual() {
-        return tarjetaActual;
-    }
-
-    public void setTarjetaActual(Tarjeta tarjetaActual) {
-        this.tarjetaActual = tarjetaActual;
-    }
-
+    
     @Override
     public String toString()
     {
         return "ConjuntoJugadas{ TARJETA ID= " + tarjetaActual.toString() +" ->" + "arrJugadas=" + imprimirArrJugadas() + ", dineroApostado=" + dineroTotalApostado + '}';
     }
+    //</editor-fold>
 }

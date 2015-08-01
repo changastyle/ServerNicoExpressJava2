@@ -1,0 +1,13 @@
+<config>
+	<puerto>9999</puerto>
+	<importeMinimoPorApuesta>1</importeMinimoPorApuesta>
+	<importeMaximoPorApuesta>10</importeMaximoPorApuesta>
+	<importePorDefault>5</importePorDefault>
+	<alcanze>10</alcanze>
+	<importeMaximoDiario>2000</importeMaximoDiario>
+	<gananciaUNDigito>7</gananciaUNDigito>
+	<gananciaDOSDigitos>70</gananciaDOSDigitos>
+	<gananciaTRESDigitos>500</gananciaTRESDigitos>
+	<cantidadNumerosGeneradosEnElSorteo>10</cantidadNumerosGeneradosEnElSorteo>
+	<MayorNumeroParaSorteo>1000</MayorNumeroParaSorteo>
+</config>
